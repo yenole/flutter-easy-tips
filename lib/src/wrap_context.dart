@@ -10,7 +10,6 @@ class EasyWrapContext extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     EasyWrapContext.context = context;
-    debugPrint('>>>>>>$context');
     return child;
   }
 }
