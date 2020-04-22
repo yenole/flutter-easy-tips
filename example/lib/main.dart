@@ -1,34 +1,37 @@
 import 'package:flutter/material.dart';
 import 'package:easy_tips/easy_tips.dart';
 
-
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+  final ValueNotifier<ThemeData> _theme =
+      ValueNotifier<ThemeData>(ThemeData.light());
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData.light(),
-      home: EasyWrapContext(
-        child: MyHomePage(title: 'Flutter Demo Home Page'),
-      ),
+    return ValueListenableBuilder<ThemeData>(
+      valueListenable: _theme,
+      builder: (context, theme, _) {
+        return MaterialApp(
+          title: 'Flutter Demo',
+          theme: theme,
+          home: EasyWrapContext(
+            child: MyHomePage(
+              theme: _theme,
+              title: 'Flutter Demo Home Page',
+            ),
+          ),
+        );
+      },
     );
   }
 }
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
+  final ValueNotifier<ThemeData> theme;
 
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
+  MyHomePage({Key key, this.theme, this.title}) : super(key: key);
 
   final String title;
 
@@ -41,40 +44,75 @@ class MyHomePage extends StatelessWidget {
         title: Text(title),
       ),
       body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
         child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Invoke "debug painting" (press "p" in the console, choose the
-          // "Toggle Debug Paint" action from the Flutter Inspector in Android
-          // Studio, or the "Toggle Debug Paint" command in Visual Studio Code)
-          // to see the wireframe for each widget.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            RaisedButton(
-              child: const Text('加载'),
-              onPressed: () async {
-                EasyLoading.task(() async {
-                  await Future.delayed(Duration(seconds: 2));
-                });
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  child: const Text('亮色主题'),
+                  onPressed: () {
+                    theme.value = ThemeData.light();
+                  },
+                ),
+                RaisedButton(
+                  child: const Text('暗色主题'),
+                  onPressed: () {
+                    theme.value = ThemeData.dark();
+                  },
+                )
+              ],
             ),
-            RaisedButton(
-              child: const Text('加载+文字'),
-              onPressed: () {
-                EasyLoading.task(() async {
-                  await Future.delayed(Duration(seconds: 2));
-                }, text: "Loading...");
-              },
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  child: const Text('加载'),
+                  onPressed: () async {
+                    EasyLoading load;
+                    load = EasyLoading.task(() async {
+                      await Future.delayed(Duration(seconds: 2));
+                      load.setText('构建中...');
+                      await Future.delayed(Duration(seconds: 2));
+                      load.setText('签名中...');
+                      await Future.delayed(Duration(seconds: 2));
+                    });
+                  },
+                ),
+                RaisedButton(
+                  child: const Text('加载+文字'),
+                  onPressed: () {
+                    EasyLoading.task(() async {
+                      await Future.delayed(Duration(seconds: 2));
+                    }, text: "Loading...");
+                  },
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                RaisedButton(
+                  child: const Text("Toast-中间"),
+                  onPressed: () {
+                    EasyToast.delayed(Duration(seconds: 1), "中间-自定义时间",
+                        align: Alignment.center);
+                  },
+                ),
+                RaisedButton(
+                  child: const Text("Toast-底部"),
+                  onPressed: () {
+                    EasyToast.short("底部-短时间");
+                  },
+                ),
+                RaisedButton(
+                  child: const Text("Toast-头部"),
+                  onPressed: () {
+                    EasyToast.long("头部-长时间", align: Alignment.topCenter);
+                  },
+                ),
+              ],
             ),
           ],
         ),

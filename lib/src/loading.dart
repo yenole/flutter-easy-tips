@@ -14,7 +14,7 @@ abstract class EasyLoading {
       raduis: raduis,
       color: color,
       boxColor: boxColor,
-      text: text,
+      text: ValueNotifier<String>(text),
       style: style,
     );
     easy.show();
@@ -36,7 +36,7 @@ abstract class EasyLoading {
       raduis: raduis,
       color: color,
       boxColor: boxColor,
-      text: text,
+      text: ValueNotifier<String>(text),
       style: style,
     );
   }
@@ -44,6 +44,8 @@ abstract class EasyLoading {
   void show();
 
   void close();
+
+  void setText(String text);
 }
 
 // ignore: must_be_immutable
@@ -52,7 +54,7 @@ class _EasyLoading extends StatelessWidget implements EasyLoading {
   final double raduis;
   final Color color;
   final Color boxColor;
-  final String text;
+  final ValueNotifier<String> text;
   final TextStyle style;
 
   _EasyLoading(
@@ -101,9 +103,14 @@ class _EasyLoading extends StatelessWidget implements EasyLoading {
                 borderRadius: BorderRadius.circular(6),
               ),
               alignment: Alignment.center,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: _buildIndicator(theme),
+              child: ValueListenableBuilder<String>(
+                valueListenable: text,
+                builder: (context, text, _) {
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: _buildIndicator(theme, text),
+                  );
+                },
               ),
             ),
           )
@@ -112,7 +119,7 @@ class _EasyLoading extends StatelessWidget implements EasyLoading {
     );
   }
 
-  List<Widget> _buildIndicator(ThemeData theme) {
+  List<Widget> _buildIndicator(ThemeData theme, String text) {
     List<Widget> widgets = <Widget>[
       ColorFiltered(
         colorFilter: ColorFilter.mode(
@@ -128,7 +135,7 @@ class _EasyLoading extends StatelessWidget implements EasyLoading {
       widgets.addAll([
         SizedBox(height: 8),
         Text(
-          text,
+          text ?? "",
           overflow: TextOverflow.ellipsis,
           style: style ??
               TextStyle(
@@ -138,5 +145,10 @@ class _EasyLoading extends StatelessWidget implements EasyLoading {
       ]);
     }
     return widgets;
+  }
+
+  @override
+  void setText(String text) {
+    this.text.value = text;
   }
 }
