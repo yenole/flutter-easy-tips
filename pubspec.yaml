@@ -1,6 +1,6 @@
 name: easy_tips
-description: Easy to use loading box and Toast box ^_^.
-version: 0.1.0+1
+description: simple to use Toast and loading plugin developed by pure flutter, support android and iOS.
+version: 0.1.0+2
 homepage: https://github.com/yenole/flutter-easy-tips.git
 
 environment:
