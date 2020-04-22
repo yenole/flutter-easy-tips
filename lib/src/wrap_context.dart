@@ -1,6 +1,5 @@
 part of easy_tips;
 
-
 class EasyWrapContext extends StatelessWidget {
   final Widget child;
   static BuildContext context;
